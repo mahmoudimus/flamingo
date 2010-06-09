@@ -1,0 +1,375 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:html="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GettingStartedDoc  Group</title><style type="text/css">
+           @import url(media/trac.css);
+          </style></head><body><p><a href="index.html">Back to Index</a></p><hr></hr><div class="wikipage searchable">
+<p>AppString
+&gt; AppStringDoc</p>
+<div class="wiki-toc">
+<ol>
+<li><a href="#GettingStarted">Getting Started</a>
+<ol>
+<li><a href="#Introduction">Introduction</a></li>
+<li><a href="#DownloadingthePackage">Downloading the
+Package</a></li>
+<li><a href="#Requirements">Requirements</a></li>
+<li><a href="#WrappersSimplestWayToUseTheLibrary">Wrappers
+(Simplest Way To Use The Library)</a></li>
+<li><a href="#Step-By-StepGuide">Step-By-Step Guide</a>
+<ol>
+<li><a href="#Step1:CompilingTheLibrary">Step1: Compiling The
+Library</a></li>
+<li><a href="#Step2:UsingTheLibraryInAnApplication">Step2: Using
+The Library In An Application</a>
+<ol>
+<li><a href="#Option1:In-MemoryIndex">Option1: In-Memory
+Index</a></li>
+<li><a href="#Option2:In-MemoryCompressedIndex">Option2: In-Memory,
+Compressed Index</a></li>
+<li><a href="#Option3:On-DiskIndex">Option3: On-Disk Index</a></li>
+</ol>
+</li>
+<li><a href="#Step3:CompilingAndRunningTheApplication">Step3:
+Compiling And Running The Application</a></li>
+</ol>
+</li>
+<li><a href="#BasicUsage">Basic Usage</a></li>
+<li><a href="#ExampleFiles">Example Files</a></li>
+</ol>
+</li>
+</ol>
+</div>
+<h1 id="GettingStarted">Getting Started</h1>
+<h2 id="Introduction">Introduction</h2>
+<p>This tutorial will guide through the basics steps needed to
+perform approximate string search on a collection of strings using
+this library. This guide focuses on how to use the FilterTree
+(FilterTreeDoc) module.</p>
+<h2 id="DownloadingthePackage">Downloading the Package</h2>
+<ul>
+<li>The entire package may be downloaded from <a class="ext-link" href="http://flamingo.ics.uci.edu/releases/3.0/flamingo-3.0.tgz"><span class="icon">
+http://flamingo.ics.uci.edu/releases/3.0/flamingo-3.0.tgz</span></a></li>
+</ul>
+<h2 id="Requirements">Requirements</h2>
+<p>Most modules in this release were developed and tested on Ubuntu
+Linux using the GNU GCC/G++ compiler.</p>
+<p>In order to compile and run most modules you will need the
+following:</p>
+<ul>
+<li>Linux environment (preferably a Debian based Linux, e.g.
+Ubuntu)</li>
+<li>C++ compiler (GCC/G++ version 4.0 or later)</li>
+<li>C++ Boost library, <a class="ext-link" href="http://www.boost.org"><span class="icon">http://www.boost.org</span></a> (only required for PartEnumDoc)</li>
+</ul>
+<p>On systems with the aptitude package manager (e.g. Ubuntu,
+Debian) you can install all required packages by typing the
+following as root user (or using sudo):</p>
+<pre class="wiki">
+$ apt-get install gcc g++ libboost-dev
+</pre>
+<p>The module MatTreeDoc was developed in
+Visual C++. No makefile is provided for that module. We recommend
+using Windows and Visual C++ for that module.</p>
+<h2 id="WrappersSimplestWayToUseTheLibrary">Wrappers (Simplest Way
+To Use The Library)</h2>
+<p>For your convenience, we have added wrappers that contain all
+necessary objects as described in section "Basic Usage". All you
+need to do to build an index and execute queries, is to create an
+instance of a wrapper. These wrappers initialize components with
+default values and are the simplest and fastest way to use our
+library - at the expense of being able to control tuning parameters
+(which filters are used, fanout, etc.).<br></br>
+We recommend browsing through the code in
+<strong>filtertree/wrappers/example.cc</strong>.</p>
+<h2 id="Step-By-StepGuide">Step-By-Step Guide</h2>
+<p>In this guide we will use a wrapper to show you how to perform
+approximate string search using the edit distance.</p>
+<h3 id="Step1:CompilingTheLibrary">Step1: Compiling The
+Library</h3>
+<p>Let us say you have extracted the archive to the following
+directory: <strong>/home/joe/flamingo-3.0</strong><br></br>
+Then you need to edit
+<strong>/home/joe/flamingo-3.0/src/makefile.inc</strong> and set
+CODEBASEROOT to the root directory of the source files, i.e.
+<strong>/home/joe/flamingo-3.0/src</strong><br></br>
+After the modifications, your
+<strong>/home/joe/flamingo-3.0/src/makefile.inc</strong> should
+look like this:</p>
+<pre class="wiki">
+CODEBASEROOT = /home/abehm/group/codebase/appstring/tags/release-3.0
+APPSTRINGROOT = $(CODEBASEROOT)
+
+VPATH = $(APPSTRINGROOT)
+
+CC = g++
+
+### Cygwin:
+# CC = g++-4
+# CXX = g++-4
+
+CPPFLAGS = -Wall -I$(APPSTRINGROOT) -O3 -DNDEBUG
+# CPPFLAGS = -Wall -I$(APPSTRINGROOT) -O3
+# CPPFLAGS = -Wall -I$(APPSTRINGROOT) -g -pg
+
+ifndef CODEBASEROOT
+$(error -- - EDIT MAKEFILE.INC - -- Please edit makefile.inc and set the CODEBASEROOT variable to the absolute path of the source code directory. 
+e.g., if you put the code in /home/joe/flamingo-3.0/src do: CODEBASEROOT = /home/joe/flamingo-3.0/src)
+endif
+</pre>
+<p>Now you can compile the wrapper library (and all other required
+libraries) by entering
+<strong>/home/joe/flamingo-3.0/src/filtertree/wrappers</strong> and
+running <strong>make</strong>, i.e.:</p>
+<pre class="wiki">
+$ cd /home/joe/flamingo-3.0/src/filtertree/wrappers
+$ make
+</pre>
+<p>There should now be a file
+<strong>libfiltertreewrappers.a</strong> in
+<strong>/home/joe/flamingo-3.0/src/filtertree/wrappers</strong>,
+i.e. for an <strong>ls -l</strong> you should get an output similar
+to the following:</p>
+<pre class="wiki">
+$ ls -l
+-rwxr-xr-x 1 joe joe 534818 2010-03-25 15:49 example
+-rw-r--r-- 1 joe joe   8883 2010-03-24 16:06 example.cc
+-rw-r--r-- 1 joe joe 255092 2010-03-25 15:48 example.o
+-rw-r--r-- 1 joe joe   1476 2010-03-25 15:48 libfiltertreewrappers.a
+-rw-r--r-- 1 joe joe   2117 2010-03-24 15:56 makefile
+-rw-r--r-- 1 joe joe   1814 2010-03-24 16:06 wrapperabs.h
+-rw-r--r-- 1 joe joe   2181 2010-03-24 16:06 wrappercombinelists.h
+-rw-r--r-- 1 joe joe   4814 2010-03-24 16:06 wrapperdiscardlists.h
+-rw-r--r-- 1 joe joe   2076 2010-03-24 15:58 wrapperondisk.h
+-rw-r--r-- 1 joe joe    308 2010-03-24 16:06 wrappers.cc
+-rw-r--r-- 1 joe joe   5034 2010-03-24 16:06 wrappers.h
+-rw-r--r-- 1 joe joe    994 2010-03-24 16:06 wrappersimple.h
+-rw-r--r-- 1 joe joe   1344 2010-03-25 15:48 wrappers.o
+</pre>
+<p>(note that the exact file sizes may differ from yours)</p>
+<h3 id="Step2:UsingTheLibraryInAnApplication">Step2: Using The
+Library In An Application</h3>
+<p>Now that we have compiled the library, we are ready to include
+it into an application.<br></br>
+Let us assume you wish to use the library in an application located
+in <strong>/home/joe/searchapp</strong> that consists of one source
+file <strong>/home/joe/searchapp/main.cc</strong><br></br>
+We will discuss three options: using an in-memory index with and
+without compression, and a disk-based index.</p>
+<h4 id="Option1:In-MemoryIndex">Option1: In-Memory Index</h4>
+<p>You can copy and paste the following lines of source code into
+<strong>/home/joe/searchapp/main.cc</strong> for us to compile:</p>
+<pre class="wiki">
+#include "filtertree/wrappers/wrappers.h"
+
+int main() {
+  StringContainerVector strContainer;
+  // read 4k lines from the file specified
+  strContainer.fillContainer("/home/joe/flamingo-3.0/src/filtertree/data/female_names.txt", 4000); 
+  
+  WrapperSimpleEd wrapper(&amp;strContainer, 2); // use a simple wrapper that uses the edit distance and 2-grams
+  wrapper.buildIndex();
+
+  float editDistance = 1.0f;
+  string queryString = "kathrin";
+
+  vector&lt;unsigned&gt; resultStringIDs; // where to store the result string ids
+  wrapper.search(queryString, editDistance, resultStringIDs);
+
+  // print out the result strings
+  cout &lt;&lt; "SIMILAR STRINGS: " &lt;&lt; endl;
+  for(unsigned i = 0; i &lt; resultStringIDs.size(); i++) {
+    string tmp;
+    strContainer.retrieveString(tmp, resultStringIDs.at(i));
+    cout &lt;&lt; tmp &lt;&lt; endl;
+  }
+
+  return 0;
+}
+</pre>
+<p>In this example all data structures are stored in main
+memory.<br></br>
+This application will use the first 4000 lines of
+<strong>/home/joe/flamingo-3.0/src/filtertree/data/female_names.txt</strong>
+as the data strings.<br></br>
+It will build an index to support approximate string search and
+answer a query that asks for all data strings that are within an
+edit-distance of 1 to "kathrin".<br></br>
+Finally, the results will be displayed.</p>
+<h4 id="Option2:In-MemoryCompressedIndex">Option2: In-Memory,
+Compressed Index</h4>
+<p>You can copy and paste the following lines of source code into
+<strong>/home/joe/searchapp/main.cc</strong> for us to compile:</p>
+<pre class="wiki">
+#include "filtertree/wrappers/wrappers.h"
+
+int main() {
+  StringContainerVector strContainer;
+  // read 4k lines from the file specified
+  strContainer.fillContainer("/home/joe/flamingo-3.0/src/filtertree/data/female_names.txt", 4000); 
+  
+  // use wrapper for compressed index
+  // index is compressed by discarding lists, using longest-lists-first (LLF) method
+  // the reduction ratio is 0.5
+  WrapperDiscardListsLLFEd wrapper(&amp;strContainer, 2, true, 0.5);
+  wrapper.buildIndex();
+
+  float editDistance = 1.0f;
+  string queryString = "kathrin";
+
+  vector&lt;unsigned&gt; resultStringIDs; // where to store the result string ids
+  wrapper.search(queryString, editDistance, resultStringIDs);
+
+  // print out the result strings
+  cout &lt;&lt; "SIMILAR STRINGS: " &lt;&lt; endl;
+  for(unsigned i = 0; i &lt; resultStringIDs.size(); i++) {
+    string tmp;
+    strContainer.retrieveString(tmp, resultStringIDs.at(i));
+    cout &lt;&lt; tmp &lt;&lt; endl;
+  }
+
+  return 0;
+}
+</pre>
+<p>In this example all data structures are stored in main
+memory.<br></br>
+This application will use the first 4000 lines of
+<strong>/home/joe/flamingo-3.0/src/filtertree/data/female_names.txt</strong>
+as the data strings.<br></br>
+It will build an index to support approximate string search and
+answer a query that asks for all data strings that are within an
+edit-distance of 1 to "kathrin".<br></br>
+Finally, the results will be displayed.</p>
+<h4 id="Option3:On-DiskIndex">Option3: On-Disk Index</h4>
+<p>You can copy and paste the following lines of source code into
+<strong>/home/joe/searchapp/main.cc</strong> for us to compile:</p>
+<pre class="wiki">
+#include "filtertree/wrappers/wrappers.h"
+
+int main() {
+  StringContainerRM strContainer;
+  strContainer.createAndOpen("collection.rm");
+  // read 4k lines from the file specified
+  strContainer.fillContainer("/home/joe/flamingo-3.0/src/filtertree/data/female_names.txt", 4000);
+  
+  // use a simple wrapper that uses the edit distance and 2-grams, 
+  // inverted lists are saved to the file index.ix
+  WrapperOnDiskSimpleEd wrapper(&amp;strContainer, "index.ix", 2); 
+  wrapper.buildIndex();
+
+  float editDistance = 1.0f;
+  string queryString = "kathrin";
+
+  vector&lt;unsigned&gt; resultStringIDs; // where to store the result string ids
+  wrapper.search(queryString, editDistance, resultStringIDs);
+
+  // print out the result strings
+  cout &lt;&lt; "SIMILAR STRINGS: " &lt;&lt; endl;
+  for(unsigned i = 0; i &lt; resultStringIDs.size(); i++) {
+    string tmp;
+    strContainer.retrieveString(tmp, resultStringIDs.at(i));
+    cout &lt;&lt; tmp &lt;&lt; endl;
+  }
+
+  return 0;
+}
+</pre>
+<p>In this example, both the inverted index and the data strings
+are stored on disk (the FilterTree remains in memory).<br></br>
+This application will use the first 4000 lines of
+<strong>/home/joe/flamingo-3.0/src/filtertree/data/female_names.txt</strong>
+as the data strings.<br></br>
+It will build an index to support approximate string search and
+answer a query that asks for all data strings that are within an
+edit-distance of 1 to "kathrin".<br></br>
+Finally, the results will be displayed.</p>
+<h3 id="Step3:CompilingAndRunningTheApplication">Step3: Compiling
+And Running The Application</h3>
+<p>Since we decided to have every module produce it's own library
+(.a file) it is necessary to link several .a files with the main.o
+(produced by /home/joe/searchapp/main.cc).<br></br>
+The simplest way to achieve this is to create a makefile for the
+application, i.e. create a file
+<strong>/home/joe/searchapp/makefile</strong> with the following
+contents:</p>
+<pre class="wiki">
+include /home/joe/flamingo-3.0/src/makefile.inc
+
+LDFLAGS = -lrt
+
+all: main
+
+main:   main.o \
+                $(APPSTRINGROOT)/common/libcommon.a \
+                $(APPSTRINGROOT)/listmerger/liblistmerger.a \
+                $(APPSTRINGROOT)/filtertree/libfiltertree.a \
+                $(APPSTRINGROOT)/filtertree/wrappers/libfiltertreewrappers.a \
+                $(APPSTRINGROOT)/sepia/libsepia.a \
+                $(APPSTRINGROOT)/util/libutil.a
+</pre>
+<p>Now you should be able to compile the application using
+<strong>make</strong>, i.e.</p>
+<pre class="wiki">
+$ make
+</pre>
+<p>If make was successful, you have compiled and linked the
+application! It is time to try and run it by typing</p>
+<pre class="wiki">
+$ ./main
+</pre>
+<p>You should have the an output something similar to the
+following:</p>
+<pre class="wiki">
+INPUTFILE: "/home/joe/flamingo-3.0/src/filtertree/data/female_names.txt"
+100% FILLING CONTAINER: 4000/4000; 0'0"/0'0"   
+SIMILAR STRINGS: 
+kathryn
+kathrine
+katherin
+kathrin
+</pre>
+<p>Congratulations, you have successfully created your first
+application using The Flamingo Package!</p>
+<h2 id="BasicUsage">Basic Usage</h2>
+<p>Approximate string search can be performed in two basic steps:
+(1) building the index, and (2) answering queries using the index.
+We will now discuss the basic components for each of the steps at a
+high-level.</p>
+<ol>
+<li>Building The Index, Needed Components
+<ul>
+<li>String Container (stores the data strings on which you want to
+perform queries)</li>
+<li>Gram Generator (decomposes strings into grams)</li>
+<li>Indexer (builds the filter tree and the inverted lists, needs a
+String Container and a Gram Generator)</li>
+</ul>
+</li>
+</ol>
+<ol start="2">
+<li>Answering Queries Using The Index, Needed Components:
+<ul>
+<li>List Merger (solves the T-occurrence problem given a set of
+inverted lists and a merging-threshold)</li>
+<li>Indexer (builds the filtertree and the inverted-lists, needs a
+String Container and a Gram Generator)</li>
+<li>Searcher (answers queries, needs a List Merger and an
+Indexer)</li>
+<li>Similarity Metric (represents the similarity metric to be
+used)</li>
+<li>Query (contains the query string, the similarity metric and the
+similarity threshold)</li>
+</ul>
+</li>
+</ol>
+<p>Refer to <strong>filtertree/example.cc</strong> for some
+advanced examples.</p>
+<h2 id="ExampleFiles">Example Files</h2>
+<p>Apart from reading this guide, we recommend you browse through
+the code of some example files. We have provided these files to
+help you understand how to use the library as quickly as
+possible.</p>
+<ul>
+<li>filtertree/wrappers/example.cc</li>
+<li>filtertree/example.cc</li>
+<li>filtertree/perftest.cc</li>
+</ul>
+</div><div class="footer"><hr></hr><p><a href="index.html">Back to Index</a></p></div></body></html>
