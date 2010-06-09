@@ -21,7 +21,7 @@
 #       CODEBASEROOT = /home/joe/flamingo-3.0/src
 
 # e.g., CODEBASEROOT = /home/joe/flamingo-3.0/src
-CODEBASEROOT =
+CODEBASEROOT = /pluto/local/src/flamingo/src
 APPSTRINGROOT = $(CODEBASEROOT)
 
 VPATH = $(APPSTRINGROOT)

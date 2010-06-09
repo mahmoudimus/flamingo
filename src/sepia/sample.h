@@ -37,7 +37,7 @@ public:
   unsigned operator[](const unsigned idx) const;
   void push_back(const unsigned val);
   vector<unsigned>::size_type size() const;
-  unsigned getCount() const;
+  size_t getCount() const;
 
   unsigned generate();
   bool hasNext() const;

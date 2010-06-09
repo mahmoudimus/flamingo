@@ -13,8 +13,11 @@
 #ifndef _errorcorr_h_
 #define _errorcorr_h_
 
+#include <algorithm>
 #include "record.h"
 #include "sepia/cluster/clusters.h"
+
+using std::min;
 
 class ErrorCorr 
 {
@@ -34,7 +37,7 @@ public:
             unsigned recordSize = 300): 
     dataset(dataset), clusters(clusters), 
     thresholdMin(thresholdMin), thresholdMax(thresholdMax), 
-    recordSize(min(recordSize, dataset->size() / 3)) 
+    recordSize(min(recordSize, static_cast<unsigned int>(dataset->size() / 3)))
   {}
 
   bool operator==(const ErrorCorr &e) const;

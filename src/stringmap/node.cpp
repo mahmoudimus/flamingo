@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <malloc.h>
+#include <stdint.h>
 #include "assert.h"
 #include "index.h"
 
@@ -100,7 +101,10 @@ void RTreePrintNode(struct Node *n, int depth) {
 		printf(" NONLEAF");
 	else
 		printf(" TYPE=?");
-	printf("  level=%d  count=%d  address=%o\n", n->level, n->count, (unsigned)n);
+	printf("  level=%d  count=%d  address=%o\n", 
+               n->level,
+               n->count,
+               static_cast<int>(reinterpret_cast<uintptr_t>(n)));
 
 	for (i=0; i<n->count; i++) {
 		if(n->level == 0) {

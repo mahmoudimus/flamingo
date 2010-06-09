@@ -450,7 +450,7 @@ detectDuplicateLists(vector<Array<unsigned>*> &arrays,
   set<unsigned> arraysAdded;
   for(unsigned i = 0 ; i < arrays.size(); i++) {   
     Array<unsigned> *currentArray = arrays.at(i);
-    unsigned arrAddr = (unsigned)currentArray;
+    unsigned arrAddr = reinterpret_cast<uintptr_t>(currentArray);
     unsigned currentCount = 1;
     
     // if the array has not been added previously

@@ -20,6 +20,7 @@
 #define _INDEX_
 
 #include <map>
+#include <stdint.h>
 
 #include "rtreeparams.h" // get the number of dimensions
 #include "element.h"
@@ -139,7 +140,7 @@ private:
 
         int Load(struct Node*);
         int Dump(struct Node*);
-        int RTreeSearch(struct Node*, struct Rect*, long*, vector<int> &answers);
+        int RTreeSearch(struct Node*, struct Rect*, long*, vector<uintptr_t> &answers);
         //int RTreeSearch(struct Node*, struct Rect*, long*, AnswerList * answers);
         int RTreeInsertRect(struct Rect*, int, struct Node**, int depth);
         void CreateSpheres(struct Node *);
@@ -158,7 +159,7 @@ public:
         int RTreeDeleteRect(struct Rect*, int, struct Node**);
 
 	// new
-	int RTreeSearch(struct Rect*, vector<int> &answers);
+	int RTreeSearch(struct Rect*, vector<uintptr_t> &answers);
 	int RTreeSearchSphere(struct Point *queryPoint, float radius, vector<int> &answers);
 	int RTreeSearchSphere(struct Node *N, struct Point *queryPoint, float radius,
 			      long *diskacc, vector<int> &answers);

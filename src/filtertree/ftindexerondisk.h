@@ -22,6 +22,7 @@
 #include <tr1/unordered_map>
 #include <cstdlib>
 #include <cstring>
+#include <stdint.h>
 
 template <class StringContainer, class InvList>
 class FtIndexerOnDisk;
@@ -55,7 +56,7 @@ protected:
   }
 
   bool static randCmpFilterTreeNode(FilterTreeNode<InvList>* a, FilterTreeNode<InvList>* b) {
-    return (unsigned)a % 666 > (unsigned)b % 666;
+    return reinterpret_cast<uintptr_t>(a) % 666 > reinterpret_cast<uintptr_t>(b) % 666;
   }
   
   bool disableStreamBuffer;
@@ -476,11 +477,11 @@ buildIndex_Impl() {
   FilterTreeNode<InvList>::getSubTreeLeaves(this->filterTreeRoot, leaves);
   
   // if there are filters we need the stringid2leafid vector and a map
-  tr1::unordered_map<unsigned, unsigned> leafAddr2leafid;
+  tr1::unordered_map<uintptr_t, uintptr_t> leafAddr2leafid;
   if(this->filterTypes.size() > 0) {
     stringid2leafid.resize(this->strContainer->size());
     for(unsigned i = 0; i < leaves.size(); i++) {
-      unsigned leafAddr = (unsigned)leaves.at(i);
+      uintptr_t leafAddr = reinterpret_cast<uintptr_t>(leaves.at(i));
       leafAddr2leafid[leafAddr] = i;
     }
   }
@@ -517,7 +518,7 @@ buildIndex_Impl() {
     
     // check if we need to update the stringid2leaf vector
     if(this->filterTypes.size() > 0) {
-      unsigned leafAddr = (unsigned)findHomeLeafNode(currentString);
+      uintptr_t leafAddr = reinterpret_cast<uintptr_t>(findHomeLeafNode(currentString));
       stringid2leafid[i] = leafAddr2leafid[leafAddr];
     }
     

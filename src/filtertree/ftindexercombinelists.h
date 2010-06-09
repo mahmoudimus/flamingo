@@ -551,7 +551,7 @@ saveLeavesWithSharedListsRec(FilterTreeNode<InvList>* node, ofstream& fpOut) {
       fpOut.write((const char*)&u, sizeof(unsigned));
     }
     
-    unordered_map<unsigned, unsigned> listAddrMap; // maps from list address to first gram code that points to the list
+    unordered_map<uintptr_t, uintptr_t> listAddrMap; // maps from list address to first gram code that points to the list
     // write gram map
     GramMap& gramMap = node->gramMap;
     u = gramMap.size();
@@ -565,7 +565,7 @@ saveLeavesWithSharedListsRec(FilterTreeNode<InvList>* node, ofstream& fpOut) {
 
       Array<unsigned>* arr = iter->second->getArray();      
       if(arr) {
-	unsigned listAddr = (unsigned)arr;
+	uintptr_t listAddr = reinterpret_cast<uintptr_t>(arr);
 	if(listAddrMap.find(listAddr) == listAddrMap.end()) {
 	  // insert the address into the map
 	  listAddrMap[listAddr] = iter->first;

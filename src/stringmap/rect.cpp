@@ -1,4 +1,3 @@
-
 //
 // $Id: rect.cpp 5027 2010-02-18 19:41:48Z rares $
 //
@@ -19,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "assert.h"
 #include "index.h"
 
@@ -82,7 +82,7 @@ void RTreeInitRect(struct Rect *R)
 
 /*-----------------------------------------------------------------------------
 | Return a rect whose first low side is higher than its opposite side -
-| interpreted as an undefined rect.
+| interpreted as an uintptr_t rect.
 -----------------------------------------------------------------------------*/
 struct Rect RTreeNullRect()
 {
@@ -596,14 +596,15 @@ int RTreeContained(struct Rect *R, struct Rect *S)
 {
 	register struct Rect *r = R, *s = S;
 	register int i, j, result;
-	assert((int)r && (int)s);
+	assert(static_cast<int>(reinterpret_cast<uintptr_t>(r)) &&
+               static_cast<int>(reinterpret_cast<uintptr_t>(s)));
 
- 	// undefined rect is contained in any other
+ 	// uintptr_t rect is contained in any other
 	//
 	if (Undefined(r))
 		return TRUE;
 
-	// no rect (except an undefined one) is contained in an undef rect
+	// no rect (except an uintptr_t one) is contained in an undef rect
 	//
 	if (Undefined(s))
 		return FALSE;
